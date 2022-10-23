@@ -3,6 +3,32 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+const string myCookieAuth = "MyCookieAuth";
+const string loginPath = "/Account/Login";
+const string accessDeniedPath = "/Account/AccessDenied";
+const string mustBelongToHRDepartment = "MustBelongToHRDepartment";
+const string adminOnly = "AdminOnly";
+const string hRManagerOnly = "HRManagerOnly";
+
+builder.Services.AddAuthentication(myCookieAuth).AddCookie(myCookieAuth, options =>
+{
+    options.Cookie.Name = myCookieAuth;
+    options.LoginPath = loginPath;
+    options.AccessDeniedPath = accessDeniedPath;
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(adminOnly, policy =>
+        policy.RequireClaim("Admin")
+    );
+    options.AddPolicy(mustBelongToHRDepartment, policy =>
+        policy.RequireClaim("Department", "HR"));
+    options.AddPolicy(hRManagerOnly, policy =>
+        policy.RequireClaim("Department", "HR")
+              .RequireClaim("Manager"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,6 +44,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();

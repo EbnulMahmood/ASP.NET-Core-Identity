@@ -2,3 +2,18 @@
 @model WebApp_UnderTheHood.Pages.Account.LoginModel
 @{
 }
+
+<form method="post">
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3">
+        <label asp-for="Credential.UserName" class="form-label"></label>
+        <input type="text" asp-for="Credential.UserName" class="form-control" >
+        <span class="text-danger" asp-validation-for="Credential.UserName"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Credential.Password" class="form-label"></label>
+        <input type="password" asp-for="Credential.Password" class="form-control" >
+        <span class="text-danger" asp-validation-for="Credential.Password"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
