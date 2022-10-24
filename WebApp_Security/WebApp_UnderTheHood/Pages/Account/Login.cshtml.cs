@@ -26,7 +26,8 @@ namespace WebApp_UnderTheHood.Pages.Account
                     new Claim(ClaimTypes.Email, "admin@mywebsite.com"),
                     new Claim("Department", "HR"),
                     new Claim("Admin", "true"),
-                    new Claim("Manager", "true")
+                    new Claim("Manager", "true"),
+                    new Claim("EmploymentDate", "2021-05-01")
                 };
 
                 const string myCookieAuth = "MyCookieAuth";
@@ -34,7 +35,12 @@ namespace WebApp_UnderTheHood.Pages.Account
                 var identity = new ClaimsIdentity(claims, myCookieAuth);
                 var claimsPrincipal = new ClaimsPrincipal(identity);
 
-                await HttpContext.SignInAsync(myCookieAuth, claimsPrincipal);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = Credential.RememberMe
+                };
+
+                await HttpContext.SignInAsync(myCookieAuth, claimsPrincipal, authProperties);
 
                 return RedirectToPage("/Index");
             }
@@ -50,5 +56,7 @@ namespace WebApp_UnderTheHood.Pages.Account
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
+        [Display(Name = "Remember Me")]
+        public bool RememberMe { get; set; }
     }
 }
